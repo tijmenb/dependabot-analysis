@@ -9,6 +9,8 @@ task :run do
   data = []
 
   apps.each do |app|
+    puts "Fetching #{app}"
+
     repo = app["links"]["repo_url"].gsub("https://github.com/", "")
 
     pull_requests = octokit.pull_requests(
@@ -17,6 +19,7 @@ task :run do
     )
 
     pull_requests.each do |pr|
+      print "."
       next unless pr.user.login == "dependabot[bot]"
       data << [app["app_name"], pr.title, pr.created_at].join(", ")
     end
