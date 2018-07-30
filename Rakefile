@@ -13,10 +13,15 @@ task :run do
 
     repo = app["links"]["repo_url"].gsub("https://github.com/", "")
 
-    pull_requests = octokit.pull_requests(
-      repo,
-      state: 'closed',
-    )
+    begin
+      pull_requests = octokit.pull_requests(
+        repo,
+        state: 'closed',
+      )
+    rescue Octokit::NotFound => e
+      puts e.inspect
+      next
+    end
 
     pull_requests.each do |pr|
       print "."
